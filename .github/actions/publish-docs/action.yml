@@ -2,11 +2,19 @@ name: "Publish Documentation"
 
 on:
   workflow_call:
-    secrets:
-      BOT_SK:
+    inputs:
+      bot_id:
+        description: "The Bot ID for authentication"
         required: true
-      BOT_ID:
+        type: string
+      bot_sk:
+        description: "The Bot Secret Key for authentication"
         required: true
+        type: string
+      artifact_path:
+        description: "The path to the documentation artifact to publish"
+        required: true
+        type: string
 
 jobs:
   publish-docs-to-pages:
@@ -17,11 +25,6 @@ jobs:
     steps:
       - name: Checkout source code (required for artifact/code access)
         uses: actions/checkout@v4
-
-      # NOTE: INSERT YOUR BUILD STEP HERE (e.g., the generate-docs Composite Action)
-      # - name: Build Documentation
-      #   uses: p2arthur/reusable-workflows/.github/actions/generate-docs@main
-      # -----------------------------------------------------------------------
 
       # 🚨 Call the new publishing Composite Action
       - name: Deploy Documentation to Pages

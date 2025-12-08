@@ -35,10 +35,6 @@ jobs:
 
       - name: Upload artifact
         uses: p2arthur/reusable-workflows/.github/actions/publish-docs@main
-        inputs:
-          bot_id: ${{ secrets.BOT_ID }}
-          bot_sk: ${{ secrets.BOT_SK }}
-          artifact_path: docs/_html # Pass the specific path created by the build step
         with:
           bot_id: ${{ secrets.BOT_ID }}
           bot_sk: ${{ secrets.BOT_SK }}
