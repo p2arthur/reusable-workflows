@@ -27,6 +27,6 @@ jobs:
       - name: Deploy Documentation to Pages
         uses: p2arthur/reusable-workflows/.github/actions/publish-docs@main
         with:
-          bot_id: ${{ inputs.bot_id }}
-          bot_sk: ${{ inputs.bot_sk }}
+          bot_id: ${{ inputs.BOT_ID }}
+          bot_sk: ${{ inputs.BOT_SK }}
           artifact_path: docs/_html # Pass the specific path created by the build step
