@@ -31,22 +31,3 @@ jobs:
 
       - name: Build doc (Run typedoc)
         run: npm run generate:code-docs
-      # ----------------------------------------------------
-
-      # --- DEPLOYMENT STEPS (Original in this file) ---
-      - name: Generate bot token for deployment
-        uses: actions/create-github-app-token@v1
-        id: app_token
-        with:
-          app_id: ${{secrets.BOT_ID}}
-          private_key: ${{secrets.BOT_SK}}
-
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/_html # Ensure this path is correct for your build output
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
-        with:
-          token: ${{ steps.app_token.outputs.token }}
