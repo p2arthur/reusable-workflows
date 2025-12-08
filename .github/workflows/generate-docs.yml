@@ -1,4 +1,4 @@
-name: 'Run typedoc and publish to pages'
+name: "Publish Documentation"
 
 on:
   workflow_call:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-publish-docs:
+  publish-docs-to-pages:
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -20,6 +20,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      # --- BUILD STEPS (Previously in Composite Action) ---
       - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
@@ -28,20 +29,22 @@ jobs:
       - name: Npm install
         run: npm ci --ignore-scripts
 
-      - name: Genearate bot token for deployment
+      - name: Build doc (Run typedoc)
+        run: npm run generate:code-docs
+      # ----------------------------------------------------
+
+      # --- DEPLOYMENT STEPS (Original in this file) ---
+      - name: Generate bot token for deployment
         uses: actions/create-github-app-token@v1
         id: app_token
         with:
           app_id: ${{secrets.BOT_ID}}
           private_key: ${{secrets.BOT_SK}}
 
-      - name: Build doc
-        run: npm run generate:code-docs
-
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/_html
+          path: docs/_html # Ensure this path is correct for your build output
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4

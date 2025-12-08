@@ -1,0 +1,24 @@
+name: "Run typedoc and publish to pages"
+
+on:
+  workflow_call:
+    secrets:
+      BOT_SK:
+        required: true
+      BOT_ID:
+        required: true
+
+  workflow_dispatch:
+
+jobs:
+  build-and-publish-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Build Typedoc Documentation
+        uses: ./.github/workflows/generate-docs.yml
