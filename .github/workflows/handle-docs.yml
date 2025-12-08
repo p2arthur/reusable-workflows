@@ -23,6 +23,7 @@ jobs:
       - name: Build Typedoc Documentation
         uses: p2arthur/reusable-workflows/.github/actions/generate-docs@main
 
+      # This step packages the generated docs as an artifact for the next action - different environments
       - name: Upload Documentation Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -37,6 +38,7 @@ jobs:
       pages: write
       id-token: write
     steps:
+      # This step downloads the artifact created in the previous job - different environments
       - name: Download Documentation Artifact
         uses: actions/download-artifact@v4
         with:
@@ -45,15 +47,12 @@ jobs:
 
       - name: Deploy Documentation
         uses: p2arthur/reusable-workflows/.github/actions/publish-docs@main
+        # Inputs to be used on the publish-docs action
         with:
-          # 🚨 FIX 1: YAML Syntax Error
           # This line was indented incorrectly and needed a single colon/value.
           # The download action puts the artifact contents into the download path.
           # The contents are the files from docs/_html. The path to the files is:
           # [Download Path] / [Artifact Name]
-          # 🚨 FIX 2: Corrected Path
-          # Path must be docs/downloaded/github-pages-docs/
           artifact_path: docs/downloaded
-
           bot_id: ${{ secrets.BOT_ID }}
           bot_sk: ${{ secrets.BOT_SK }}
