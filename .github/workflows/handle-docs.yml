@@ -21,4 +21,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Typedoc Documentation
-        uses: ./.github/actions/generate-docs
+        uses: p2arthur/reusable-workflows/.github/actions/generate-docs@main
