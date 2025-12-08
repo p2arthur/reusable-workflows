@@ -53,7 +53,7 @@ jobs:
           # [Download Path] / [Artifact Name]
           # 🚨 FIX 2: Corrected Path
           # Path must be docs/downloaded/github-pages-docs/
-          artifact_path: docs/downloaded/github-pages-docs
+          artifact_path: docs/downloaded
 
           bot_id: ${{ secrets.BOT_ID }}
           bot_sk: ${{ secrets.BOT_SK }}
