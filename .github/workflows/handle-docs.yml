@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-publish-docs:
+  build-docs:
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -22,3 +22,21 @@ jobs:
 
       - name: Build Typedoc Documentation
         uses: p2arthur/reusable-workflows/.github/actions/generate-docs@main
+
+  publish-docs:
+    needs: build-docs
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Publish to GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: p2arthur/reusable-workflows/.github/actions/publish-docs@main
+        with:
+          secrets:
+            BOT_SK: ${{ secrets.BOT_SK }}
+            BOT_ID: ${{ secrets.BOT_ID }}
+          path: docs/_html
