@@ -23,6 +23,13 @@ jobs:
       - name: Build Typedoc Documentation
         uses: p2arthur/reusable-workflows/.github/actions/generate-docs@main
 
+      - name: Upload Documentation Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages-docs
+          path: docs/_html # The path your build action creates
+          retention-days: 1
+
   publish-docs:
     needs: build-docs
     runs-on: ubuntu-latest
@@ -30,12 +37,23 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - name: Publish to GitHub Pages
-        uses: actions/configure-pages@v4
+      - name: Download Documentation Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages-docs # Must match the name used in the upload step
+          path: docs/downloaded # Download the artifact content here
 
-      - name: Upload artifact
+      - name: Deploy Documentation
         uses: p2arthur/reusable-workflows/.github/actions/publish-docs@main
         with:
+          # 🚨 FIX 1: YAML Syntax Error
+          # This line was indented incorrectly and needed a single colon/value.
+          # The download action puts the artifact contents into the download path.
+          # The contents are the files from docs/_html. The path to the files is:
+          # [Download Path] / [Artifact Name]
+          # 🚨 FIX 2: Corrected Path
+          # Path must be docs/downloaded/github-pages-docs/
+          artifact_path: docs/downloaded/github-pages-docs
+
           bot_id: ${{ secrets.BOT_ID }}
           bot_sk: ${{ secrets.BOT_SK }}
-          artifact_path: docs/_html # Pass the specific path created by the build step
