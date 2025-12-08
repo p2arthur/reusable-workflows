@@ -1,0 +1,25 @@
+name: "Build Typedoc Documentation"
+description: "Checks out code, installs dependencies, and runs the documentation build command."
+
+runs:
+  using: "composite" # 👈 Defines this as a Composite Action
+  steps:
+    # NOTE: We keep the checkout here because the action needs the code to run npm install/build
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      with:
+        # Add a shallow clone depth to potentially speed up this initial fetch
+        fetch-depth: 1
+
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+
+    - name: Npm install
+      run: npm ci --ignore-scripts
+      shell: bash
+
+    - name: Build doc (Run typedoc)
+      run: npm run generate:code-docs
+      shell: bash
