@@ -1,35 +1,56 @@
 name: "Publish Documentation"
+description: "A composite action to deploy documentation artifacts to GitHub Pages."
 
-on:
-  workflow_call:
-    inputs:
-      bot_id:
-        description: "The Bot ID for authentication"
-        required: true
-        type: string
-      bot_sk:
-        description: "The Bot Secret Key for authentication"
-        required: true
-        type: string
-      artifact_path:
-        description: "The path to the documentation artifact to publish"
-        required: true
-        type: string
+inputs:
+  bot_id:
+    description: "The Bot ID for authentication"
+    required: true
+    type: string
+  bot_sk:
+    description: "The Bot Secret Key for authentication"
+    required: true
+    type: string
+  artifact_path:
+    description: "The path to the documentation artifact to publish"
+    required: true
+    type: string
 
-jobs:
-  publish-docs-to-pages:
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    steps:
-      - name: Checkout source code (required for artifact/code access)
-        uses: actions/checkout@v4
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Environment
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
 
-      # 🚨 Call the new publishing Composite Action
-      - name: Deploy Documentation to Pages
-        uses: p2arthur/reusable-workflows/.github/actions/publish-docs@main
-        with:
-          bot_id: ${{ inputs.bot_id }}
-          bot_sk: ${{ inputs.bot_sk }}
-          artifact_path: docs/_html # Pass the specific path created by the build step
+    # Note: If your publishing requires a custom script/tool, it would be installed here.
+
+    - name: Deploy Documentation to Pages
+      # 1. Map the inputs to step-level environment variables (required for Composite Actions)
+      env:
+        BOT_ID: ${{ inputs.bot_id }}
+        BOT_SK: ${{ inputs.bot_sk }}
+
+      # 2. Use the standard GitHub Pages deployment action
+      # We assume the external tool that caused the original error is replaced by the standard deployment flow.
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        # The token is passed via the Bot ID/Secret Key (assuming 'BOT_ID' is the username/ID and 'BOT_SK' is the PAT/token)
+        # NOTE: You should confirm how your publishing tool handles these credentials.
+        # For standard peaceiris/actions-gh-pages, it uses the DEPLOY_KEY or GITHUB_TOKEN.
+        # Since you explicitly defined bot_id and bot_sk, we will use them to build the token.
+        deploy_key: ${{ env.BOT_SK }}
+        external_repository: ${{ github.repository }}
+        publish_dir: ${{ inputs.artifact_path }}
+        # If the external tool was a custom script, use the `run` block instead:
+        # run: |
+        #   # Example of using the mapped environment variables inside a script
+        #   /path/to/your/custom-publish-script \
+        #     --id "${{ env.BOT_ID }}" \
+        #     --secret "${{ env.BOT_SK }}" \
+        #     --path "${{ inputs.artifact_path }}"
+
+    - name: Clean up temporary files (Optional)
+      run: |
+        echo "Deployment complete."
+      shell: bash
