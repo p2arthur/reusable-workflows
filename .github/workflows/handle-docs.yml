@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Typedoc Documentation
-        uses: ./.github/actions/generate-docs@main
+        uses: p2arthur/reusable-workflows/.github/actions/generate-typescript-docs@main
 
       # This step packages the generated docs as an artifact for the next action - different environments
       - name: Upload Documentation Artifact
@@ -46,7 +46,7 @@ jobs:
           path: docs/downloaded # Download the artifact content here
 
       - name: Deploy Documentation
-        uses: ./.github/actions/publish-docs@main
+        uses: p2arthur/reusable-workflows/.github/actions/publish-docs@main
         # Inputs to be used on the publish-docs action
         with:
           # This line was indented incorrectly and needed a single colon/value.
