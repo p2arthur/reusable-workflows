@@ -10,9 +10,6 @@ runs:
 
     - name: Enforce Typedoc Config from Action
       shell: bash
-      # Copies the typedoc.json from the action folder ($GITHUB_ACTION_PATH)
-      # to the root of the project's working directory ($GITHUB_WORKSPACE),
-      # overwriting any existing file.
       run: cp "$GITHUB_ACTION_PATH/typedoc.json" "$GITHUB_WORKSPACE/typedoc.json"
 
     - name: Use Node.js 22.x
@@ -23,15 +20,6 @@ runs:
       run: npm ci
       shell: bash
 
-    - name: Generate Prisma Client Typings
-      # This command explicitly generates the TypeScript type definitions
-      # required for TypeDoc/TypeScript to understand `@prisma/client`.
-      run: npx prisma generate
-      shell: bash
-
     - name: Build doc (Run typedoc)
       shell: bash
-      # Since the enforced file is now in the default location (typedoc.json in CWD),
-      # we can run the command simply, letting TypeDoc find it naturally.
-      # You can even revert to 'npm run generate:code-docs' if that script just calls `typedoc`.
-      run: npx typedoc
+      run: npm run generate:code-docs
