@@ -22,6 +22,7 @@ runs:
 
     # --- THE NEW STEP ---
     - name: Generate Dynamic TypeDoc Config
+      shell: bash
       run: node generate-typedoc-config.js
     # --------------------
 
