@@ -28,4 +28,4 @@ runs:
     # 2. Use '--' to pass arguments through npm to the actual typedoc command
     - name: Build doc (Run typedoc)
       shell: bash
-      run: npm run generate:code-docs -- --options ci-typedoc.json
+      run: npm run generate:code-docs -- --options ci-typedoc.json --skipErrorChecking
