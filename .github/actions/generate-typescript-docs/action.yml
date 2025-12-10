@@ -2,40 +2,24 @@ name: "Build Typedoc Documentation"
 description: "Checks out code, installs dependencies, and runs the documentation build command."
 
 runs:
-  using: "composite"
+  using: "composite" # 👈 Defines this as a Composite Action
   steps:
+    # NOTE: We keep the checkout here because the action needs the code to run npm install/build
     - name: Checkout source code
       uses: actions/checkout@v4
 
-    # 1. Copy to a unique name to ensure we don't accidentally rely on existing files
     - name: Enforce Typedoc Config from Action
       shell: bash
-      run: cp "$GITHUB_ACTION_PATH/typedoc.json" "$GITHUB_WORKSPACE/ci-typedoc.json"
+      run: cp "$GITHUB_ACTION_PATH/typedoc.json" "$GITHUB_WORKSPACE/typedoc.json"
 
     - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
         node-version: 22.x
-
     - name: Npm install
-      shell: bash
       run: npm ci
-
-    - name: Debug - Verify Config File Content
       shell: bash
-      # 1. Print the file explicitly to ensure the `cp` command worked as expected
-      run: |
-        echo "=== CONTENT OF ci-typedoc.json ==="
-        cat "$GITHUB_WORKSPACE/ci-typedoc.json"
-        echo "=================================="
 
-    - name: Debug - Show Resolved TypeDoc Config
-      shell: bash
-      # 2. Run TypeDoc with --showConfig to see what it is actually about to do.
-      #    We use the same npm command but swap the action for --showConfig.
-      run: npm run generate:code-docs -- --options ci-typedoc.json --showConfig
-
-    # 2. Use '--' to pass arguments through npm to the actual typedoc command
     - name: Build doc (Run typedoc)
       shell: bash
-      run: npm run generate:code-docs -- --options ci-typedoc.json --skipErrorChecking
+      run: npm run generate:code-docs
