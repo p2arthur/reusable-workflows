@@ -2,24 +2,26 @@ name: "Build Typedoc Documentation"
 description: "Checks out code, installs dependencies, and runs the documentation build command."
 
 runs:
-  using: "composite" # 👈 Defines this as a Composite Action
+  using: "composite"
   steps:
-    # NOTE: We keep the checkout here because the action needs the code to run npm install/build
     - name: Checkout source code
       uses: actions/checkout@v4
 
+    # 1. Copy to a unique name to ensure we don't accidentally rely on existing files
     - name: Enforce Typedoc Config from Action
       shell: bash
-      run: cp "$GITHUB_ACTION_PATH/typedoc.json" "$GITHUB_WORKSPACE/typedoc.json"
+      run: cp "$GITHUB_ACTION_PATH/typedoc.json" "$GITHUB_WORKSPACE/ci-typedoc.json"
 
     - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
         node-version: 22.x
-    - name: Npm install
-      run: npm ci
-      shell: bash
 
+    - name: Npm install
+      shell: bash
+      run: npm ci
+
+    # 2. Use '--' to pass arguments through npm to the actual typedoc command
     - name: Build doc (Run typedoc)
       shell: bash
-      run: npm run generate:code-docs
+      run: npm run generate:code-docs -- --options ci-typedoc.json
