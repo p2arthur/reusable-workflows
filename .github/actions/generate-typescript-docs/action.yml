@@ -20,7 +20,13 @@ runs:
       with:
         node-version: 22.x
     - name: Npm install
-      run: npm ci --ignore-scripts
+      run: npm ci
+      shell: bash
+
+    - name: Generate Prisma Client Typings
+      # This command explicitly generates the TypeScript type definitions
+      # required for TypeDoc/TypeScript to understand `@prisma/client`.
+      run: npx prisma generate
       shell: bash
 
     - name: Build doc (Run typedoc)
