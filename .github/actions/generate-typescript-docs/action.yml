@@ -20,6 +20,11 @@ runs:
       run: npm ci
       shell: bash
 
+    # --- THE NEW STEP ---
+    - name: Generate Dynamic TypeDoc Config
+      run: node generate-typedoc-config.js
+    # --------------------
+
     - name: Build doc (Run typedoc)
       shell: bash
       run: npm run generate:code-docs
