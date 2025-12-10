@@ -12,6 +12,10 @@ runs:
       shell: bash
       run: cp "$GITHUB_ACTION_PATH/typedoc.json" "$GITHUB_WORKSPACE/ci-typedoc.json"
 
+    - name: Debug File Existence
+      shell: bash
+      run: ls -la "$GITHUB_WORKSPACE/ci-typedoc.json"
+
     - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
