@@ -8,10 +8,6 @@ runs:
     - name: Checkout source code
       uses: actions/checkout@v4
 
-    - name: Enforce Typedoc Config from Action
-      shell: bash
-      run: cp "$GITHUB_ACTION_PATH/typedoc.json" "$GITHUB_WORKSPACE/typedoc.json"
-
     - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
