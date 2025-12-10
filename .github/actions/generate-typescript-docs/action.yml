@@ -7,13 +7,19 @@ runs:
     # NOTE: We keep the checkout here because the action needs the code to run npm install/build
     - name: Checkout source code
       uses: actions/checkout@v4
+
     - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
         node-version: 22.x
     - name: Npm install
-      run: npm ci --ignore-scripts
+      run: npm ci
       shell: bash
+
+    - name: Generate Dynamic TypeDoc Config
+      shell: bash
+      run: node "${{ github.action_path }}/generate-typedoc-config.js"
+
     - name: Build doc (Run typedoc)
-      run: npm run generate:code-docs
       shell: bash
+      run: npm run generate:code-docs
