@@ -16,11 +16,9 @@ runs:
       run: npm ci
       shell: bash
 
-    # --- THE NEW STEP ---
     - name: Generate Dynamic TypeDoc Config
       shell: bash
       run: node "${{ github.action_path }}/generate-typedoc-config.js"
-    # --------------------
 
     - name: Build doc (Run typedoc)
       shell: bash
