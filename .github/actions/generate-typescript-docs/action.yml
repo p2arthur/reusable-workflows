@@ -14,6 +14,6 @@ runs:
     - name: Npm install
       run: npm ci --ignore-scripts
       shell: bash
-    - name: Build doc (Run typedoc)
-      run: npm run generate:code-docs
+    - name: Build doc (Run typedoc) and enforce typedoc.json from action folder
+      run: npx typedoc --options "$GITHUB_ACTION_PATH/typedoc.json"
       shell: bash
