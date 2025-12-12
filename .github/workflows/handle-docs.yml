@@ -38,35 +38,6 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - name: Cleanup All Existing Artifacts
-        uses: actions/github-script@v6
-        with:
-          # Use the default GITHUB_TOKEN for cleanup (must have contents: write permission)
-          script: |
-            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.runId,
-            });
-
-            console.log(`Found ${artifacts.data.artifacts.length} total artifacts in the current run.`);
-
-            for (const artifact of artifacts.data.artifacts) {
-              await github.rest.actions.deleteArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: artifact.id,
-              });
-              console.log(`Successfully deleted artifact ID: ${artifact.id} (Name: ${artifact.name})`);
-            }
-            console.log("Cleanup complete. Starting deployment process now.");
-
-        # 2. Re-upload the Artifact (Must be done after cleanup)
-        # Since your build-docs job uploaded the artifact named 'github-pages-docs',
-        # we need to re-upload the Pages artifact if you are still using the deploy action.
-        # However, if you rely only on the 'build-docs' upload, skip this re-upload.
-
-        # *** Assuming your composite action still contains the download/deploy steps: ***
       - name: Download Documentation Artifact
         uses: actions/download-artifact@v4
         with:

@@ -1,26 +1,45 @@
-name: "Publish Documentation"
-description: "A composite action to upload and deploy documentation artifacts to GitHub Pages."
-
-inputs:
-  artifact_path:
-    description: "The path to the documentation artifact to publish (e.g., docs/_html)"
-    required: true
-    type: string
-  bot_token:
-    description: "The GitHub App token used for authentication."
-    required: true
-    type: string
-
-runs:
-  using: "composite"
+publish-docs:
+  needs: build-docs
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write # Ensure this is present for cleanup!
+    pages: write
+    id-token: write
   steps:
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
+    # -----------------------------------------------------------------
+    # CRITICAL: NEW PLACEMENT FOR CLEANUP (Right before deployment logic)
+    # -----------------------------------------------------------------
+    - name: Cleanup All Existing Artifacts
+      uses: actions/github-script@v6
       with:
-        path: ${{ inputs.artifact_path }}
+        script: |
+          // Uses the default GITHUB_TOKEN (requires contents: write on the job)
+          const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.runId,
+          });
 
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+          console.log(`Found ${artifacts.data.artifacts.length} total artifacts in the current run.`);
+
+          for (const artifact of artifacts.data.artifacts) {
+            await github.rest.actions.deleteArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: artifact.id,
+            });
+            console.log(`Successfully deleted artifact ID: ${artifact.id} (Name: ${artifact.name})`);
+          }
+          console.log("Cleanup complete. Starting deployment process now.");
+    # -----------------------------------------------------------------
+    - name: Download Documentation Artifact
+      uses: actions/download-artifact@v4
       with:
-        GITHUB_TOKEN: ${{ inputs.bot_token }}
+        name: github-pages-docs
+        path: docs/downloaded
+
+    - name: Deploy Documentation
+      uses: p2arthur/reusable-workflows/.github/actions/publish-docs@v0.3
+      with:
+        artifact_path: docs/downloaded
+        bot_token: ${{ inputs.github-token }}
