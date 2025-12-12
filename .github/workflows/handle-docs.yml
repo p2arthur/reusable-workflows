@@ -2,11 +2,11 @@ name: "Run typedoc and publish to pages"
 
 on:
   workflow_call:
-  inputs:
-    github-token:
-      description: "GitHub token with permissions to deploy to pages."
-      required: true
-      type: string
+    inputs:
+      github-token:
+        description: "GitHub token with permissions to deploy to pages."
+        required: true
+        type: string
 
   workflow_dispatch:
 
