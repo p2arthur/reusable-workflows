@@ -2,6 +2,11 @@ name: "Run typedoc and publish to pages"
 
 on:
   workflow_call:
+  inputs:
+    github-token:
+      description: "GitHub token with permissions to deploy to pages."
+      required: true
+      type: string
 
   workflow_dispatch:
 
@@ -39,16 +44,9 @@ jobs:
           name: github-pages-docs
           path: docs/downloaded
 
-      - name: Generate bot token
-        uses: actions/create-github-app-token@v1
-        id: app_token
-        with:
-          app_id: ${{ secrets.BOT_ID}}
-          private_key: ${{ secrets.BOT_SK }}
-
       - name: Deploy Documentation
         uses: p2arthur/reusable-workflows/.github/actions/publish-docs@v0.3
 
         with:
           artifact_path: docs/downloaded
-          bot_token: ${{ steps.app_token.outputs.token }}
+          bot_token: ${{ inputs.github-token }}
