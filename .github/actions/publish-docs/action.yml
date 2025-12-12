@@ -6,14 +6,6 @@ inputs:
     description: "The path to the documentation artifact to publish (e.g., docs/_html)"
     required: true
     type: string
-  bot_id:
-    description: "The Bot ID for authentication"
-    required: true
-    type: string
-  bot_sk:
-    description: "The Bot Secret Key for authentication"
-    required: true
-    type: string
 
 runs:
   using: "composite"

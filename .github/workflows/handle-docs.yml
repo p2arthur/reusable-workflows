@@ -2,13 +2,6 @@ name: "Run typedoc and publish to pages"
 
 on:
   workflow_call:
-    secrets:
-      BOT_SK:
-        required: true
-      BOT_ID:
-        required: true
-
-  workflow_dispatch:
 
 jobs:
   build-docs:
@@ -49,10 +42,4 @@ jobs:
         uses: p2arthur/reusable-workflows/.github/actions/publish-docs@v0.2
         # Inputs to be used on the publish-docs action
         with:
-          # This line was indented incorrectly and needed a single colon/value.
-          # The download action puts the artifact contents into the download path.
-          # The contents are the files from docs/_html. The path to the files is:
-          # [Download Path] / [Artifact Name]
           artifact_path: docs/downloaded
-          bot_id: ${{ secrets.BOT_ID }}
-          bot_sk: ${{ secrets.BOT_SK }}
