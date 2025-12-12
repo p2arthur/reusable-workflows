@@ -23,4 +23,4 @@ runs:
       id: deployment
       uses: actions/deploy-pages@v4
       with:
-        token: ${{ inputs.bot_token }}
+        GITHUB_TOKEN: ${{ inputs.bot_token }}
